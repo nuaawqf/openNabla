@@ -472,3 +472,123 @@ endsubroutine list_prn
 end module listlib
 
 
+!>This subroutine create position array for list array
+!>@param[out]  plist -- position array of list array
+!>@param[in]   nlist -- length of list array
+!>@param[in]   nele  -- length array of list array
+!<
+!############################################################################
+subroutine ilist_create(plist,nlist,nele)
+!############################################################################
+implicit none
+integer,intent(out):: plist(nlist+1)
+integer,intent(in) :: nlist
+integer,intent(in) :: nele(nlist)
+
+integer :: i
+
+plist(1) = 1
+do i=1,nlist
+  plist(i+1) = plist(i) + nele(i)
+end do 
+end subroutine ilist_create
+
+!>This function return the length of list(i) 
+!>@param[in]   i     -- index of list
+!>@param[in]   nlist -- length of list array
+!>@param[in]   plist -- position array of list array
+!<
+!############################################################################
+integer function ilist_length(i,nlist,plist)
+!############################################################################
+implicit none
+integer,intent(in) :: i
+integer,intent(in) :: nlist
+integer,intent(in) :: plist(nlist+1)
+
+ilist_length = plist(i+1)-plist(i)
+end function ilist_length
+
+!>This subroutine return the data of integer list(i)
+!>@param[in]   i     -- index of list
+!>@param[in]   nlist -- length of list array
+!>@param[in]   plist -- position array of list array
+!>@param[in]   ilist -- data of integer list array
+!>@param[out]  idat  -- data of receive list(i)
+!<
+!############################################################################
+subroutine ilist_getint(i,nlist,plist,ilist,idat) 
+!############################################################################
+implicit none
+integer,intent(in) :: i
+integer,intent(in) :: nlist
+integer,intent(in) :: plist(nlist+1)
+integer,intent(in) :: ilist(plist(nlist+1)-1)
+integer,intent(out):: idat(plist(i+1)-plist(i))
+
+idat = ilist(plist(i):plist(i+1)-1)
+end subroutine ilist_getint
+
+
+!>This function return the data of integer list(i)
+!>@param[in]   i     -- index of list
+!>@param[in]   nlist -- length of list array
+!>@param[in]   plist -- position array of list array
+!>@param[in]   rlist -- data of integer list array
+!<
+!############################################################################
+subroutine ilist_getreal(i,nlist,plist,rlist,rdat) 
+!############################################################################
+use precision,only:dp
+implicit none
+integer,intent(in)  :: i
+integer,intent(in)  :: nlist
+integer,intent(in)  :: plist(nlist+1)
+real(dp),intent(in) :: rlist(plist(nlist+1)-1)
+real(dp),intent(out):: rdat(plist(i+1)-plist(i))
+
+rdat= rlist(plist(i):plist(i+1)-1)
+end subroutine ilist_getreal
+
+!>This subroutine sets the data of integer list(i)
+!>@param[in]   i     -- index of list
+!>@param[in]   nlist -- length of list array
+!>@param[in]   plist -- position array of list array
+!>@param[in]   ilist -- data of integer list array
+!>@param[in]   idat  -- data for list(i)
+!<
+!############################################################################
+subroutine ilist_setint(i,nlist,plist,ilist,idat) 
+!############################################################################
+implicit none
+integer,intent(in)    :: i
+integer,intent(in)    :: nlist
+integer,intent(in)    :: plist(nlist+1)
+integer,intent(inout) :: ilist(plist(nlist+1)-1)
+integer,intent(in)    :: idat(plist(i+1)-plist(i))
+
+ilist(plist(i):plist(i+1)-1) = idat
+end subroutine ilist_setint
+
+!>This subroutine set the data of real list(i)
+!>@param[in]   i     -- index of list
+!>@param[in]   nlist -- length of list array
+!>@param[in]   plist -- position array of list array
+!>@param[in]   rlist -- data of real list array
+!>@param[in]   rdat  -- data for list(i)
+!<
+!############################################################################
+subroutine ilist_setreal(i,nlist,plist,rlist,rdat) 
+!############################################################################
+use precision,only:dp
+implicit none
+integer,intent(in)     :: i
+integer,intent(in)     :: nlist
+integer,intent(in)     :: plist(nlist+1)
+real(dp),intent(inout) :: rlist(plist(nlist+1)-1)
+real(dp),intent(in)    :: rdat(plist(i+1)-plist(i))
+
+rlist(plist(i):plist(i+1)-1) = rdat
+end subroutine ilist_setreal
+
+
