@@ -28,7 +28,7 @@
 !---------------------------------------------------------------------------! 
 
 !> \file
-!! Contains grd_set(),grd_get(),grd_wrt(),couple_get(),couple_wrt(),vcbnd_get(),
+!! Contains grd_del(),grd_set(),grd_get(),grd_wrt(),couple_get(),couple_wrt(),vcbnd_get(),
 !! vcbnd_wrt(),bnd_reorder(),bnd_resetind()
 !<
 
@@ -54,7 +54,92 @@
 !close(ifile)
 !end subroutine mesh_exp
 
+!>This subroutine delete all the dynamic allocated data
+!<
+!############################################################################
+subroutine grd_del
+!############################################################################
+use comm0
+implicit none
 
+integer :: ierr
+
+if(allocated(nsc))      deallocate(nsc,stat=ierr)
+if(allocated(nec))      deallocate(nec,stat=ierr)
+if(allocated(cityp))    deallocate(cityp,stat=ierr)
+if(allocated(ctype))    deallocate(ctype,stat=ierr)
+if(allocated(cname))    deallocate(cname,stat=ierr)
+
+if(allocated(nsf))      deallocate(nsf,stat=ierr)
+if(allocated(nef))      deallocate(nef,stat=ierr)
+if(allocated(nsb))      deallocate(nsb,stat=ierr)
+if(allocated(neb))      deallocate(neb,stat=ierr)
+
+if(allocated(x))        deallocate(x,stat=ierr)
+if(allocated(xo))       deallocate(xo,stat=ierr)
+
+if(allocated(xc))       deallocate(xc,stat=ierr)
+if(allocated(vol))      deallocate(vol,stat=ierr)
+if(allocated(volo))     deallocate(volo,stat=ierr)
+if(allocated(voloo))    deallocate(voloo,stat=ierr)
+
+if(allocated(own))      deallocate(own,stat=ierr)
+if(allocated(nei))      deallocate(nei,stat=ierr)
+
+if(allocated(swvol))    deallocate(swvol,stat=ierr)
+if(allocated(sf))       deallocate(sf,stat=ierr)
+if(allocated(magsf))    deallocate(magsf,stat=ierr)
+if(allocated(xf))       deallocate(xf,stat=ierr)
+if(allocated(xfo))      deallocate(xfo,stat=ierr)
+if(allocated(fx))       deallocate(fx,stat=ierr)
+if(allocated(dr))       deallocate(dr,stat=ierr)
+if(allocated(corr))     deallocate(corr,stat=ierr)
+if(allocated(lsp))      deallocate(lsp,stat=ierr)
+if(allocated(lsn))      deallocate(lsn,stat=ierr)
+
+if(allocated(nspair))   deallocate(nspair,stat=ierr)
+if(allocated(nepair))   deallocate(nepair,stat=ierr)
+if(allocated(bpair))    deallocate(bpair,stat=ierr)
+
+if(allocated(nsp))      deallocate(nsp,stat=ierr)
+if(allocated(nep))      deallocate(nep,stat=ierr)
+if(allocated(nspem))    deallocate(nspem,stat=ierr)
+if(allocated(nepem))    deallocate(nepem,stat=ierr)
+                                     
+if(allocated(bcoup))    deallocate(bcoup,stat=ierr)
+if(allocated(bstrain))  deallocate(bstrain,stat=ierr)
+if(allocated(btrans))   deallocate(btrans,stat=ierr)
+if(allocated(bityp))    deallocate(bityp,stat=ierr)
+if(allocated(btype))    deallocate(btype,stat=ierr)
+if(allocated(bname))    deallocate(bname,stat=ierr)
+if(allocated(brough))   deallocate(brough,stat=ierr)
+if(allocated(bgmot))    deallocate(bgmot,stat=ierr)
+if(allocated(bvmot))    deallocate(bvmot,stat=ierr)
+
+if(allocated(forwardt)) deallocate(forwardt,stat=ierr)
+if(allocated(reverset)) deallocate(reverset,stat=ierr)
+
+if(allocated(sepaxis))  deallocate(sepaxis,stat=ierr)
+if(allocated(rotcen))   deallocate(rotcen,stat=ierr)
+if(allocated(cellt))    deallocate(cellt,stat=ierr)
+if(allocated(facet))    deallocate(facet,stat=ierr)
+
+if(allocated(cpwt))     deallocate(cpwt)
+
+if(allocated(ccell))    deallocate(ccell,stat=ierr)
+if(allocated(ccell_p))  deallocate(ccell_p,stat=ierr)
+if(allocated(cpoint))   deallocate(cpoint,stat=ierr)
+if(allocated(cpoint_p)) deallocate(cpoint_p,stat=ierr)
+if(allocated(pcell))    deallocate(pcell,stat=ierr)
+if(allocated(pcell_p))  deallocate(pcell_p,stat=ierr)
+if(allocated(pface))    deallocate(pface,stat=ierr)
+if(allocated(pface_p))  deallocate(pface_p,stat=ierr)
+if(allocated(face))     deallocate(face,stat=ierr)
+if(allocated(face_p))   deallocate(face_p,stat=ierr)
+if(allocated(cface))    deallocate(cface,stat=ierr)
+if(allocated(cface_p))  deallocate(cface_p,stat=ierr)
+
+end subroutine grd_del
 
 !############################################################################
 subroutine grd_set(ndim_,nvrt_,x_,&
@@ -328,7 +413,6 @@ call couple_wrt(mfile)
 close(mfile)
 
 call vcbnd_wrt(bfile)
-
 return
 
 100 continue
