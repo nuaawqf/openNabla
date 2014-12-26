@@ -54,7 +54,7 @@ implicit none
 integer,intent(in)         :: ifile
 character(len=*),intent(in):: key
 integer,intent(in)         :: m,n
-real(dp),intent(inout)     :: val(m,n)
+real(dp),intent(inout)      :: val(m,n)
 integer,intent(in)         :: ist,ien
 logical,intent(out)        :: usercode
 integer,intent(out)        :: ierr
@@ -124,7 +124,7 @@ implicit none
 integer,intent(in)          :: ifile
 character(len=*),intent(in) :: key
 integer,intent(in)          :: m,n
-real(dp),intent(in)         :: val(m,n)
+real(dp),intent(in)          :: val(m,n)
 integer,intent(in)          :: ist,ien
 logical,intent(in)          :: usercode
 

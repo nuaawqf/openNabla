@@ -469,6 +469,7 @@ write(form,'(a,i0,a)') "(i0,a1,",n,"(i0,x),tl1,a1)"
 write(*,form) n,'(',var%ind,')'
 endsubroutine list_prn
 
+
 end module listlib
 
 
@@ -535,6 +536,7 @@ end subroutine ilist_getint
 !>@param[in]   nlist -- length of list array
 !>@param[in]   plist -- position array of list array
 !>@param[in]   rlist -- data of integer list array
+!>@param[in]   rdat  -- return data
 !<
 !############################################################################
 subroutine ilist_getreal(i,nlist,plist,rlist,rdat) 
@@ -591,4 +593,74 @@ real(dp),intent(in)    :: rdat(plist(i+1)-plist(i))
 rlist(plist(i):plist(i+1)-1) = rdat
 end subroutine ilist_setreal
 
+!>This subroutine reverses the order of elements in list
+!>@param[in]   i     -- index of list
+!>@param[in]   nlist -- length of list array
+!>@param[in]   plist -- position array of list array
+!>@param[in]   ilist -- data of integer list array
+!<
+!############################################################################
+subroutine ilist_reverint(i,nlist,plist,ilist)
+!############################################################################
+implicit none
+integer,intent(in)    :: i
+integer,intent(in)    :: nlist
+integer,intent(in)    :: plist(nlist+1)
+integer,intent(inout) :: ilist(plist(nlist+1)-1)
 
+integer :: dat(plist(i+1)-plist(i)-1)
+integer :: j,n
+
+n= plist(i+1) - plist(i)
+do j=1,n-1
+  dat(j) = ilist(plist(i+1)-j)
+end do
+
+ilist(plist(i)+1:plist(i+1)-1) = dat
+endsubroutine ilist_reverint
+
+
+!>This subroutine reorders list array according to reordering table
+!>@param[in]      nlist -- length of list array
+!>@param[inout]   plist -- position array of integer list array
+!>@param[inout]   ilist -- data of integer list array
+!>@param[in]      order -- order table for new list array
+!<
+!############################################################################
+subroutine ilist_reorder(nlist,plist,ilist,order)
+!############################################################################
+implicit none
+integer,intent(in)    :: nlist
+integer,intent(inout) :: plist(nlist+1)
+integer,intent(inout) :: ilist(plist(nlist+1)-1)
+integer,intent(in)    :: order(nlist)
+
+integer :: ilisto(plist(nlist+1)-1),plisto(nlist+1),ne(nlist),i
+!
+! save the old data
+!
+ilisto = ilist
+plisto = plist
+!
+! count the number of new i-element 
+!
+do i=1,nlist
+  ne(i) = plist(order(i)+1)-plist(order(i))
+end do
+!
+! create the position array for new list array
+!
+plist(1) = 1
+do i=1,nlist
+  plist(i+1) = plist(i) + ne(i)
+end do 
+!
+! the new cface gets the face definition from old cface.
+!
+do i=1,nlist
+  ilist(plist(i):plist(i+1)-1) = &
+  ilisto(plisto(order(i)):plisto(order(i)+1)-1)
+end do  
+!
+return
+endsubroutine ilist_reorder

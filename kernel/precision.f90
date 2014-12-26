@@ -3,7 +3,7 @@
 !   //  \   C omputational|           Continuous Mechanism (v 1.0)          !
 !  //    \  C ontinuous   |Copyright (C) : liuhuafei                        !
 ! //      \ M echanism    |Email  :   liuhuafei@hotmail.com or              !
-! =========               |           LIUHUAFEI@BAOSTEEL.COM                 !
+! =========               |           LIUHUAFEI@BAOSTEEL.COM                !
 !---------------------------------------------------------------------------!
 !License                                                                    !
 !  This file is part of OpenNabla.                                          !
@@ -46,9 +46,6 @@ integer,parameter  :: byt32   = 1
 integer,parameter  :: sp      = c_float           !< defaule opennabla float
 integer,parameter  :: dp      = c_double          !< defaule opennabla double  
 integer,parameter  :: ptr     = c_intptr_t        !< defaule opennabla array or function address
-!
-! c_intptr_t is equal to c_long,c_size_t
-!
 
 integer,parameter  :: sp64    = 2*sp
 integer,parameter  :: dp64    = 2*dp

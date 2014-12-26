@@ -95,9 +95,9 @@ select case(imsg)
 !
 !------ MESH ERROR
 !    
-  case(err_msh_vrtfacnum)
+  case(err_grd_vrtfacnum)
     msg ='INVALID MESH VERTEX/FACE/OWN/NEI NUMBER'
-  case(err_msh_badvect)
+  case(err_grd_badvect)
     msg ='INVALID VECTOR OR TENSOR VALUE IN KEYWORD VALUE'
 !
 !-----  FVM DICRETIZATION ERR

@@ -66,7 +66,7 @@ if(ierr/=0) goto 100
 
 read(str,*,err=100) nvrt_
 if(nvrt_<=0) then
-  ierr = err_msh_vrtfacnum ; goto 100
+  ierr = err_grd_vrtfacnum ; goto 100
 endif  
 
 ndim_        =3
@@ -100,7 +100,7 @@ if(ierr/=0) goto 100
 
 read(str,*,err=100) nface_
 if(nface_<=0) then
-  ierr = err_msh_vrtfacnum;  goto 100
+  ierr = err_grd_vrtfacnum;  goto 100
 endif
 
 nbfac_      =0
@@ -136,7 +136,7 @@ call readHeader(ofile)
 call getline(ofile,str,ierr)
 read(str,*,err=100) n
 if(n/=nface_) then
-  ierr=err_msh_vrtfacnum; goto 100
+  ierr=err_grd_vrtfacnum; goto 100
 endif  
 
 own_%ndim  =1
@@ -168,7 +168,7 @@ if(ierr/=0) goto 100
 
 read(str,*,err=100) n
 if(n<=0.or.n>nface_)  then
-  ierr=err_msh_vrtfacnum ; goto 100
+  ierr=err_grd_vrtfacnum ; goto 100
 endif  
 
 nei_%ndim  =1

@@ -50,7 +50,7 @@ real(dp),parameter  :: boltzmann  = 5.67e-8  ! W/m2.K4
 integer,parameter   :: maxpcel     = 12      !< max. points per cell
 integer,parameter   :: maxfpnt     = 96      !< max. points per face
 integer,parameter   :: maxcpnt     = 36      !< max. cells per point
-integer,parameter   :: maxcnei     = 100	 !< max. neighbous per cell 
+integer,parameter   :: maxcnei     = 100	   !< max. neighbous per cell 
 !
 !
 ! ccm version
@@ -64,9 +64,8 @@ character           :: ccm_ver*32 = '(v0.01.00, 16-07-2013)'
 character           :: casedir*256           !< case directory
 character           :: casename*32           !< case name
 character           :: application*32        !< application name
-logical             :: binary     = .false.  !< file format
-integer             :: file_ilog  = 1000     !< log file unit
-character           :: file_log*3 = 'log'    !< log file name
+logical             :: binary = .false.      !< file format
+integer             :: file_ilog             !< log file unit
 !
 ! model parameters.
 !
@@ -293,8 +292,8 @@ integer,parameter   :: err_str_toint = 40
 integer,parameter   :: err_str_toreal = 41
 integer,parameter   :: err_str_tonum  = 43
 
-integer,parameter   :: err_msh_vrtfacnum  =50
-integer,parameter   :: err_msh_badvect =51
+integer,parameter   :: err_grd_vrtfacnum  =50
+integer,parameter   :: err_grd_badvect =51
 
 integer,parameter   :: err_fvm_badddt   =100
 integer,parameter   :: err_fvm_badddtback=101
@@ -427,6 +426,41 @@ end select
 end subroutine bnpar
 end module scheme
 
+
+!>This subroutine begins to logging the calculation process
+!<
+!############################################################################
+subroutine log_ini
+!############################################################################
+use precision
+use scheme,only:file_ilog,casedir
+implicit none
+
+integer :: ierr
+!
+call fopen(file_ilog,trim(casedir)//delim//'log','w',ierr)
+end subroutine log_ini
+
+
+!>This subroutine write information into logging file
+!<
+!############################################################################
+subroutine log_wri
+!############################################################################
+use scheme,only:file_ilog,time_test,time
+implicit none
+!
+! log close due to mesh deletion
+!
+write(file_ilog,100) 
+write(file_ilog,100) 'TIME OF DIVERGENCE TERM DISCRETIZATION = ',time_test(1)
+write(file_ilog,100) 'TIME OF LAPLACIAN  TERM DISCRETIZATION = ',time_test(2)
+write(file_ilog,100) 'TIME OF SOLVING LINEAR EQUATIONS = ',      time_test(3)
+write(file_ilog,100) 'TIME OF CONVERAGE',                        time
+
+close(unit=file_ilog)   
+100 format(a,es19.11e2)
+end subroutine log_wri
 
 
 

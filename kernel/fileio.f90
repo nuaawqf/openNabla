@@ -820,3 +820,129 @@ elseif(access(1:10)=='sequential' .or. access(1:10)=='SEQUENTIAL') then
 endif  
 end subroutine wrtface
 
+!> This routine reads a face array from a file 
+!<
+!###########################################################################
+subroutine getfacei(unit,n,ntv,face_p,face,own,nei,ist,ien,nv,ierr)
+!###########################################################################
+!  read a face list face(n) own(n) nei(n) section (ist:ien) from binary & ascii file
+!===========================================================================
+!>@param[in]    unit    -- file unit
+!>@param[in]    n       -- number of face
+!>@param[in]    ntv     -- total number of face vertexs (face(ntv))
+!>@param[inout] face_p  -- position array of face (face_p(n+1))
+!>@param[inout] face    -- face certex array (face(nv))
+!>@param[inout] own     -- integer array own(n)
+!>@param[inout] nei     -- integer array nei(n)
+!>@param[in]    ist     -- starting index of face,own(ist:ien),nei(ist:ien)
+!>@param[in]    ien     -- ending index of   face,own(ist:ien),nei(ist:ien)
+!>@param[in]    nv      -- number of vertexs defining the face 
+!>@param[out]   ierr    -- return error code
+!<
+!===========================================================================
+use scheme,only:err_file_listarr
+implicit none
+integer,intent(in)       :: unit
+integer,intent(in)       :: n
+integer,intent(in)       :: ntv
+integer,intent(inout)    :: face_p(n+1)
+integer,intent(inout)    :: face(ntv)
+integer,intent(inout)    :: own(n),nei(n)
+integer,intent(in)       :: ist,ien
+integer,intent(in)       :: nv
+integer,intent(out)      :: ierr
+
+integer   :: nf,i,itemp(10000)
+character :: access*11
+
+ierr = 0
+
+inquire(unit=unit,access=access)
+
+face_p(1) = 1
+
+if(access(1:6)=='STREAM' .or. access(1:6)=='stream') then
+  if(nv>0) then
+    do i=ist,ien
+      face_p(i+1) = face_p(i)+nv
+    end do
+    do i=ist,ien
+      read(unit,err=100) face(face_p(i):face_p(i+1)-1),own(i),nei(i)
+    end do
+  else
+    do i=ist,ien
+      read(unit,err=100) nf
+      face_p(i+1) = face_p(i)+nf
+      read(unit,err=100) face(face_p(i):face_p(i+1)-1),own(i),nei(i)
+    end do
+  endif
+elseif(access(1:10)=='SEQUENTIAL' .or. access(1:10)=='sequential') then
+  if(nv>0) then
+    do i=ist,ien
+      face_p(i+1) = face_p(i)+nv
+    end do
+    do i=ist,ien
+      read(unit,*,err=100) face(face_p(i):face_p(i+1)-1),own(i),nei(i)
+    end do
+  else
+    do i=ist,ien
+      read(unit,*,err=100) nf,itemp(1:nf+2)
+      face_p(i+1) = face_p(i)+nf
+      face(face_p(i):face_p(i+1)-1) = itemp(1:nf)
+      own(i)                        = itemp(nf+1)
+      nei(i)                        = itemp(nf+2)
+    enddo
+  endif 
+endif  
+return
+
+100 continue
+ierr = err_file_listarr
+return
+end subroutine getfacei
+
+
+!> This routine writes a face array into a file
+!<
+!###########################################################################
+subroutine wrtfacei(unit,n,ntv,face_p,face,own,nei,ist,ien)
+!###########################################################################
+!  write a integer list val(n) section (ist:ien) to binary & ascii file
+!  n v1 v2 ... vn cL cR
+!===========================================================================
+!>@param[in]  unit    -- file unit
+!>@param[in]  n       -- number of face
+!>@param[in]  ntv     -- total number of face vertexs (face(ntv))
+!>@param[in]  face_p  -- position array of face (face_p(n+1))
+!>@param[in]  face    -- face certex array (face(nv))
+!>@param[in]  own     -- integer array own(n)
+!>@param[in]  nei     -- integer array nei(n)
+!>@param[in]  ist     -- starting index of face,own(ist:ien),nei(ist:ien)
+!>@param[in]  ien     -- ending index of   face,own(ist:ien),nei(ist:ien)
+!<
+!===========================================================================
+implicit none
+integer,intent(in)     :: unit
+integer,intent(in)     :: n
+integer,intent(in)     :: ntv
+integer,intent(inout)  :: face_p(n+1)
+integer,intent(inout)  :: face(ntv)
+integer,intent(inout)  :: own(n),nei(n)
+integer,intent(in)     :: ist,ien
+
+integer   :: i
+character :: fmt*20,access*11
+
+inquire(unit=unit,access=access)
+
+if(access(1:6)=='stream' .or. access(1:6)=='STREAM') then
+  do i=ist,ien
+    write(unit) face_p(i+1)-face_p(i),face(face_p(i):face_p(i+1)-1),own(i),nei(i)
+  end do
+elseif(access(1:10)=='sequential' .or. access(1:10)=='SEQUENTIAL') then
+  do i=ist,ien
+    write(fmt,'(a1,i0,a)') '(',face_p(i+1)-face_p(i)+3,'(i0,x))'
+    write(unit,trim(fmt))  face_p(i+1)-face_p(i),face(face_p(i):face_p(i+1)-1),own(i),nei(i)
+  end do
+endif  
+end subroutine wrtfacei
